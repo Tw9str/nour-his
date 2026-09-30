@@ -33,7 +33,7 @@ export function Modal({
     >
       <div className="modal-head">
         <div>
-          <span className="eyebrow">مستشفى نور</span>
+          <span className="eyebrow">مشفى النور</span>
           <h2 id={titleId}>{title}</h2>
           {subtitle && <p>{subtitle}</p>}
         </div>

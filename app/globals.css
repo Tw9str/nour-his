@@ -1968,7 +1968,7 @@ tr:last-child td {
     overflow: visible;
   }
   .patient-banner::before {
-    content: 'مستشفى نور · كشف حساب';
+    content: 'مشفى النور · كشف حساب';
     display: block;
     font-weight: bold;
   }

@@ -38,7 +38,7 @@ export function Login({
             <Icon name="heart" size={29} />
           </span>
           <div>
-            <strong>نور</strong>
+            <strong>مشفى النور</strong>
             <small>رعاية أقرب. إدارة أبسط.</small>
           </div>
         </div>

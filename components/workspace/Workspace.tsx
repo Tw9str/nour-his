@@ -32,7 +32,7 @@ export function Workspace({ checkoutId }: { checkoutId?: string }) {
         <div className="brand-mark">
           <Icon name="heart" size={36} />
         </div>
-        <h1>نور</h1>
+        <h1>مشفى النور</h1>
         <p>جارٍ الاتصال بخادم المنشأة…</p>
         <span className="spinner" />
       </main>
@@ -72,7 +72,7 @@ export function Workspace({ checkoutId }: { checkoutId?: string }) {
             <Icon name="heart" size={28} />
           </span>
           <div>
-            <strong>نور</strong>
+            <strong>مشفى النور</strong>
             <small>نظام إدارة المنشأة</small>
           </div>
         </div>
@@ -174,7 +174,7 @@ export function Workspace({ checkoutId }: { checkoutId?: string }) {
             <div className="workspace-top">
               <span>
                 <Icon name="building" size={16} />
-                مستشفى نور <span className="crumb">/</span> مساحة العمل
+                مشفى النور <span className="crumb">/</span> مساحة العمل
               </span>
               <span>
                 {new Intl.DateTimeFormat('ar-SY-u-nu-latn', {
@@ -298,7 +298,7 @@ export function Workspace({ checkoutId }: { checkoutId?: string }) {
           </>
         )}
         <footer className="app-footer">
-          <span>نور · رعاية أقرب، إدارة أبسط</span>
+          <span>مشفى النور · رعاية أقرب، إدارة أبسط</span>
           <span>
             <Icon name="shield" size={14} />
             خادم محلي · صلاحيات حسب الدور
