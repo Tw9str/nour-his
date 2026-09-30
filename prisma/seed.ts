@@ -4,8 +4,8 @@ import { hashPassword } from '../server/passwords';
 import { password } from '../shared/validation';
 config({ path: '.env.local', quiet: true });
 config({ path: '.env.migrate', quiet: true });
-if (process.env.MIGRATION_DATABASE_URL)
-  process.env.DATABASE_URL = process.env.MIGRATION_DATABASE_URL;
+const migrationUrl = process.env.MIGRATION_DATABASE_URL || process.env.DATABASE_URL_UNPOOLED;
+if (migrationUrl) process.env.DATABASE_URL = migrationUrl;
 async function main() {
   const db = database();
   try {

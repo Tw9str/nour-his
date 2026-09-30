@@ -24,5 +24,12 @@ ALTER TABLE "Ward" ADD CONSTRAINT "Ward_departmentName_fkey"
   FOREIGN KEY ("departmentName") REFERENCES "Department"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE "Bed" ADD CONSTRAINT "Bed_department_ward_fkey"
   FOREIGN KEY ("department", "ward") REFERENCES "Ward"("departmentName", "name") ON DELETE RESTRICT ON UPDATE CASCADE;
-GRANT SELECT, INSERT, UPDATE, DELETE ON "Department", "Ward" TO nour_app;
+-- Local installs have a separate runtime role; hosted databases may use another role.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'nour_app') THEN
+    GRANT SELECT, INSERT, UPDATE, DELETE ON "Department", "Ward" TO nour_app;
+  END IF;
+END
+$$;
 COMMIT;

@@ -1,0 +1,18 @@
+# Upload application source only; keep local databases, backups and credentials local.
+.env*
+!.env.example
+.local/
+backups/
+.git/
+.agents/
+.codex/
+node_modules/
+generated/
+.next/
+.next-e2e/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+*.pem
+*-debug.log*

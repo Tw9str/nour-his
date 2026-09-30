@@ -11,8 +11,9 @@ export function database() {
         {
           connectionString: process.env.DATABASE_URL,
           max: 10,
-          connectionTimeoutMillis: 5000,
-          options: `-c search_path=${schema}`,
+          connectionTimeoutMillis: 15000,
+          // Neon pooling uses the default public schema without session settings.
+          ...(schema !== 'public' ? { options: `-c search_path=${schema}` } : {}),
         },
         { schema },
       ),

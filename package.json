@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npm run db:generate && next build",
+    "vercel-build": "npm run db:generate && npm run db:deploy && npm run db:seed && next build",
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --incremental false",
