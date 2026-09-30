@@ -1,0 +1,2 @@
+import {defineConfig,devices} from '@playwright/test';
+export default defineConfig({testDir:'tests/e2e',globalTeardown:'./tests/e2eCleanup.ts',workers:1,timeout:120000,expect:{timeout:15000},use:{baseURL:'http://127.0.0.1:3101',...devices['Desktop Chrome'],channel:'msedge',trace:'retain-on-failure'},webServer:{command:'node --import tsx scripts/e2eServer.ts',url:'http://127.0.0.1:3101',reuseExistingServer:false,timeout:120000}});

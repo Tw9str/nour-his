@@ -1,0 +1,23 @@
+[Unit]
+Description=Nour local facility application
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=nour
+Group=nour
+WorkingDirectory=/opt/nour
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start --hostname 127.0.0.1
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/nour/.next
+InaccessiblePaths=-/opt/nour/.env.setup -/opt/nour/.env.migrate -/opt/nour/.env.backup -/opt/nour/.local -/opt/nour/backups
+
+[Install]
+WantedBy=multi-user.target

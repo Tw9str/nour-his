@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client"
+  output = "../generated/prisma"
+}
+datasource db {
+  provider = "postgresql"
+}
+model User {
+  id String @id @default(uuid())
+  username String @unique
+  name String
+  email String? @unique
+  role String
+  passwordHash String
+  active Boolean @default(true)
+  mustChange Boolean @default(true)
+  version Int @default(1)
+  sessions Session[]
+  createdAt DateTime @default(now())
+}
+model Session {
+  id String @id
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  expiresAt DateTime
+  lastActive DateTime @default(now())
+  createdAt DateTime @default(now())
+  @@index([userId])
+}
+model RateBucket {
+  id String @id
+  count Int
+  expiresAt DateTime
+}
+model Department {
+  id String @id @default(uuid())
+  name String @unique
+  version Int @default(1)
+  wards Ward[]
+}
+model Ward {
+  id String @id @default(uuid())
+  name String
+  departmentName String
+  department Department @relation(fields:[departmentName], references:[name], onUpdate:Cascade, onDelete:Restrict)
+  version Int @default(1)
+  beds Bed[]
+  @@unique([departmentName,name])
+}
+model Bed {
+  id String @id @default(uuid())
+  department String
+  ward String
+  name String
+  active Boolean @default(true)
+  version Int @default(1)
+  wardRecord Ward @relation(fields:[department,ward], references:[departmentName,name], onUpdate:Cascade, onDelete:Restrict)
+  stay Stay?
+  @@unique([department,ward,name])
+}
+model Patient {
+  id String @id @default(uuid())
+  number Int @unique @default(autoincrement())
+  name String
+  phone String
+  dob String
+  sex String
+  createdAt DateTime @default(now())
+  stays Stay[]
+  @@index([name])
+}
+model Stay {
+  id String @id @default(uuid())
+  number Int @unique @default(autoincrement())
+  patientId String
+  patient Patient @relation(fields:[patientId],references:[id])
+  activeBedId String? @unique
+  activeBed Bed? @relation(fields:[activeBedId], references:[id])
+  location String
+  status String @default("open")
+  version Int @default(1)
+  admittedAt DateTime @default(now())
+  dischargedAt DateTime?
+  charges Charge[]
+  payments Payment[]
+  @@index([status,admittedAt])
+}
+model Service {
+  id String @id @default(uuid())
+  name String @unique
+  price BigInt
+  active Boolean @default(true)
+  version Int @default(1)
+}
+model Item {
+  id String @id @default(uuid())
+  sku String @unique
+  name String
+  unit String
+  quantity Int @default(0)
+  minimum Int @default(5)
+  price BigInt
+  active Boolean @default(true)
+  version Int @default(1)
+  movements StockMovement[]
+}
+model StockMovement {
+  id String @id @default(uuid())
+  itemId String
+  item Item @relation(fields:[itemId],references:[id])
+  quantity Int
+  reason String
+  actorId String
+  at DateTime @default(now())
+  @@index([itemId,at])
+}
+model Charge {
+  id String @id @default(uuid())
+  stayId String
+  stay Stay @relation(fields:[stayId],references:[id])
+  label String
+  quantity Int
+  unitPrice BigInt
+  itemId String?
+  voided Boolean @default(false)
+  voidReason String?
+  createdAt DateTime @default(now())
+  @@index([stayId])
+}
+model Payment {
+  id String @id @default(uuid())
+  number Int @unique @default(autoincrement())
+  stayId String
+  stay Stay @relation(fields:[stayId],references:[id])
+  amount BigInt
+  method String
+  actorId String
+  actorName String
+  createdAt DateTime @default(now())
+  @@index([stayId])
+}
+model Expense {
+  id String @id @default(uuid())
+  title String
+  category String
+  amount BigInt
+  date String
+  note String
+  actorId String
+  voided Boolean @default(false)
+  voidReason String?
+  createdAt DateTime @default(now())
+  @@index([date])
+}
+model Audit {
+  id String @id @default(uuid())
+  actorId String
+  action String
+  entity String
+  detail String @default("")
+  at DateTime @default(now())
+  @@index([at])
+}
+model Receipt {
+  id String @id
+  userId String
+  hash String
+  result Json
+  createdAt DateTime @default(now())
+}
+model Revision {
+  id Int @id @default(1)
+  value Int @default(0)
+}

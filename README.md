@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# نور — إدارة منشأة صغيرة
 
-## Getting Started
+واجهة عربية فقط، بأرقام غربية، لمساحات العمل: **المرضى، الفواتير، المخزون**، وتبويب **الإدارة** للمدير لإدارة الموظفين والخدمات والأسرة والأقسام والأجنحة. توجد شاشة مستقلة للتحصيل والمغادرة. الخطوط والأيقونات محلية؛ لا يتطلب الاستخدام اليومي اتصالًا بالإنترنت.
 
-First, run the development server:
+**البداية:** [دليل التشغيل في المستشفى](docs/hospitalSetup.md) · [شرح الميزات](docs/features.md) · [الأمان وحدود الإصدار](docs/security.md) · [ملفات التنفيذ](docs/changedFiles.md).
 
-```bash
+## التشغيل للتطوير
+
+يتطلب Node.js 24 وPostgreSQL. ثبّت الحزم أثناء توفر الإنترنت، ثم جهّز قاعدة محلية مستقلة:
+
+```sh
+npm ci
+# ضع اتصال مسؤول PostgreSQL المحلي في .env.setup باسم NOUR_SETUP_DATABASE_URL
+npm run db:provision
+npm run db:generate
+npm run db:deploy
+npm run db:seed
+npm run db:grants
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+افتح `http://localhost:3000`. بيانات المدير المؤقتة في `.local/firstLogin.txt`. سجّل الدخول باسم المستخدم وكلمة المرور؛ يُحدد الدور من الحساب. أول دخول يتطلب تغيير كلمة المرور. لا تُنشأ بيانات مرضى وهمية. لا تعِد تشغيل provision على قاعدة موجودة.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+للتجربة المحلية، اضبط `NOUR_TEST_LOGIN=true` في `.env.development.local` وشغّل `npm run dev`. أزرار الدخول التجريبي تفتح حسابًا تجريبيًا للدور المختار فورًا دون إدخال بيانات. تُنشأ هذه الحسابات منفصلة عن حسابات الموظفين، وتبقى العمليات ضمن صلاحيات الدور. يعمل الاختصار في وضع التطوير فقط؛ تعطيله يمنع استخدام جلساته أيضًا. الدخول العادي لا يتطلب اختيار دور.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+في الجهاز الذي أُنشئ عليه المشروع، توجد قاعدة تطوير مستقلة على المنفذ `5544` داخل `.local/postgres`. تحتاج تشغيلها مجددًا بعد إعادة تشغيل Windows؛ انظر الدليل. هذه قاعدة تطوير وليست تثبيت خدمة المستشفى النهائي.
 
-## Learn More
+## التحقق
 
-To learn more about Next.js, take a look at the following resources:
+```sh
+npm run typecheck
+npm run lint
+npm test
+npm run test:e2e
+npm run build
+npm audit
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+اختبارات قاعدة البيانات تستخدم مخططات مؤقتة باسم `nour_test_*` وتحذفها بعد الاختبار. يلزم اتصال المالك في `.env.migrate`. اختبار الواجهة يستخدم Microsoft Edge، المنفذ `3101`، ومجلد بناء مستقلًا. لا تشغّل الاختبارات على قاعدة مرضى فعلية.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## التنظيم
 
-## Deploy on Vercel
+- `app`: الصفحات والمسارات وسياسة العرض.
+- `components`: مكوّنات مشتركة ومكوّنات كل ميزة، بأسماء PascalCase.
+- `hooks`, `services`: إدارة حالة الواجهة والاتصال بالخادم.
+- `shared`: أنواع العرض ومخططات Zod المشتركة؛ لا أسرار ولا اتصال قاعدة بيانات.
+- `server`: المصادقة والصلاحيات والمعاملات والاستعلامات والنسخ الاحتياطي.
+- `prisma`: مصدر حقيقة بنية البيانات وترحيلاتها.
+- `scripts`, `deploy`, `tests`, `docs`: التشغيل والتثبيت والاختبارات والتوثيق.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+المصدر الوحيد لبيانات العمل هو PostgreSQL. لا توجد بيانات مرضى في localStorage أو ملف JSON أو قاعدة سحابية. يستخدم React 19 `useActionState` و`useFormStatus` للنماذج، مع تعطيل تحقق HTML الافتراضي وZod 4 في المتصفح والخادم.
